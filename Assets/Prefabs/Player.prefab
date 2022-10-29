@@ -170,6 +170,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4405705955396430842}
   - component: {fileID: 4405705955396430845}
+  - component: {fileID: 6102884262442686013}
   - component: {fileID: 4405705955396430844}
   m_Layer: 0
   m_Name: Player
@@ -194,7 +195,7 @@ Transform:
   - {fileID: 4405705953974977488}
   - {fileID: 4405705954523367300}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4405705955396430845
 MonoBehaviour:
@@ -225,7 +226,23 @@ MonoBehaviour:
     m_Bits: 8
   maxSlopeAngle: 45
   orientation: {fileID: 4405705954523367300}
+  bulletImpact: {fileID: 196044, guid: 63d0bcc1954525b459b983c30b4ecad6, type: 3}
   state: 0
+--- !u!114 &6102884262442686013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4405705955396430843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a995aa6334925466995c98544e95add6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  currentHealth: 0
+  invincibleTime: 1
 --- !u!54 &4405705955396430844
 Rigidbody:
   m_ObjectHideFlags: 0

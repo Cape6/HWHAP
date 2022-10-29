@@ -37,9 +37,12 @@ public class PlayerMove : MonoBehaviour
     public float maxSlopeAngle;
     private RaycastHit slopeHit;
     private bool exitingSlope;
-    
+
 
     public Transform orientation;
+    public GameObject bulletImpact;
+
+    private Camera cam;
 
     float horizontalInput;
     float verticalInput;
@@ -59,6 +62,7 @@ public class PlayerMove : MonoBehaviour
 
     private void Start()
     {
+        cam = Camera.main;
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
@@ -81,6 +85,11 @@ public class PlayerMove : MonoBehaviour
             rb.drag = groundDrag;
         else
             rb.drag = 0;
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Shoot();
+        }
     }
 
     private void FixedUpdate()
@@ -94,7 +103,7 @@ public class PlayerMove : MonoBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
 
         // when to jump
-        if(Input.GetKey(jumpKey) && readyToJump && grounded)
+        if (Input.GetKey(jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
 
@@ -127,7 +136,7 @@ public class PlayerMove : MonoBehaviour
         }
 
         // Mode - Sprinting
-        else if(grounded && Input.GetKey(sprintKey))
+        else if (grounded && Input.GetKey(sprintKey))
         {
             state = MovementState.sprinting;
             moveSpeed = sprintSpeed;
@@ -162,11 +171,11 @@ public class PlayerMove : MonoBehaviour
         }
 
         // on ground
-        else if(grounded)
+        else if (grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 
         // in air
-        else if(!grounded)
+        else if (!grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
         // turn gravity off while on slope
@@ -214,7 +223,7 @@ public class PlayerMove : MonoBehaviour
 
     private bool OnSlope()
     {
-        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;
@@ -226,5 +235,31 @@ public class PlayerMove : MonoBehaviour
     private Vector3 GetSlopeMoveDirection()
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+    }
+
+    private void Shoot()
+    {
+        //setting up the raycast point to the exact center of the screen.
+        Ray ray = cam.ViewportPointToRay(new Vector3(.5f, .5f, 0f));
+        ray.origin = cam.transform.position;
+
+        //If raycast detect something store the information in the Raycasthit hit.
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Debug.Log("We hit " + hit.collider.gameObject.name);
+
+            if(hit.collider.gameObject.tag == "Enemy")
+            {
+                GameObject bulletImpactObject = Instantiate(bulletImpact, hit.point + (hit.normal * .002f), Quaternion.LookRotation(hit.normal, Vector3.up));
+                Destroy(bulletImpactObject, 2f);
+            }
+
+            else
+            {
+                GameObject bulletImpactObject = Instantiate(bulletImpact, hit.point + (hit.normal * .002f), Quaternion.LookRotation(hit.normal, Vector3.up));
+                Destroy(bulletImpactObject, 2f);
+            }
+          
+        }
     }
 }
